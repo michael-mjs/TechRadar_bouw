@@ -19,7 +19,7 @@ function getRingCategory(status) {
 }
 
 export async function loadRadarData() {
-  const data = await d3.csv('/radardata.csv');
+  const data = await d3.csv(`${import.meta.env.BASE_URL}radardata.csv`);
 
   // get unique Hoofdfase and Type Robot
   const hoofdfaseSet = new Set();
