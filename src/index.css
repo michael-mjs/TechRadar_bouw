@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-radar-bg: #0f172a;
+  --color-radar-grid: #334155;
+  --color-radar-dark: #f8fafc;
+  --color-radar-light: #1e293b;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  html, body {
+    @apply h-full w-full bg-radar-bg text-radar-dark antialiased m-0 p-0 overflow-hidden;
+  }
+  
+  #root {
+    @apply h-full w-full flex flex-col;
+  }
+}
+
+.blip-circle {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.blip-circle:hover {
+  filter: drop-shadow(0px 2px 8px rgba(255,255,255,0.25));
+}
+
+.blip-text {
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-sans);
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
