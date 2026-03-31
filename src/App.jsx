@@ -86,9 +86,8 @@ function App() {
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-3 bg-slate-800/80 border-b border-slate-700/50 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🤖</span>
           <div>
-            <h1 className="text-lg font-bold text-white tracking-tight">Tech Radar</h1>
+            <h1 className="text-lg font-bold text-white tracking-tight italic">Technology Radar</h1>
             <p className="text-xs text-slate-400">Inzet Robots in de Bouw</p>
           </div>
         </div>
