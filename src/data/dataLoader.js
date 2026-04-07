@@ -66,7 +66,10 @@ export async function loadRadarData() {
         handeling: row["Specifieke Handeling"],
         partners: row["Project Partners & Locatie"],
         typeRobot: row["Type Robot"],
-        rawStatus: row["Radar (Status)"]
+        rawStatus: row["Radar (Status)"],
+        linkImage: row["Link Image"],
+        usecase: row["Usecase"],
+        location: row["Location"]
       }
     };
   });

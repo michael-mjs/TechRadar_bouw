@@ -140,6 +140,18 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
       {/* Name */}
       <h2 className="text-xl font-bold text-white mb-4 leading-tight">{selected.name}</h2>
       
+      {/* Image Embed */}
+      {selected.metadata?.linkImage && (
+        <div className="mb-5 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 bg-slate-900/50 relative flex justify-center items-center">
+          <img 
+            src={selected.metadata.linkImage} 
+            alt={selected.name} 
+            className="w-full h-auto object-cover max-h-56 transition-opacity duration-300"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      )}
+
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-5">
         {quad && (
@@ -166,6 +178,16 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
           </p>
         </div>
 
+        {/* Usecase */}
+        {selected.metadata?.usecase && (
+          <div>
+            <h3 className="text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Usecase</h3>
+            <p className="text-slate-300 leading-relaxed text-sm">
+              {selected.metadata.usecase}
+            </p>
+          </div>
+        )}
+
         {/* Metadata */}
         {selected.metadata && (
           <div className="bg-slate-700/30 border border-slate-700/50 p-4 rounded-xl space-y-3">
@@ -189,6 +211,12 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Partners & Locatie</span>
               <p className="text-sm text-slate-400 mt-0.5 italic">{selected.metadata.partners}</p>
             </div>
+            {selected.metadata.location && (
+              <div>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Exacte Locatie</span>
+                <p className="text-sm text-slate-400 mt-0.5 italic">{selected.metadata.location}</p>
+              </div>
+            )}
           </div>
         )}
 
