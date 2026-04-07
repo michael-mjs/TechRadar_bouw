@@ -141,22 +141,38 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
       <h2 className="text-xl font-bold text-white mb-4 leading-tight">{selected.name}</h2>
       
       {/* Image Embed */}
-      {selected.metadata?.linkImage && (
-        <div className="mb-5 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 bg-slate-900/50 relative flex justify-center items-center">
+      <div className="mb-5 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 bg-slate-900/50 relative flex justify-center items-center min-h-[120px]">
+        {selected.linkImage ? (
           <img 
-            src={selected.metadata.linkImage} 
+            src={selected.linkImage} 
             alt={selected.name} 
             referrerPolicy="no-referrer"
             loading="lazy"
-            className="w-full h-auto object-cover max-h-56 transition-opacity duration-300"
+            className="w-full h-auto object-cover max-h-56 transition-opacity duration-200"
+            onLoad={(e) => { e.target.style.opacity = 1; }}
             onError={(e) => { 
-              console.error("Image failed to load:", selected.metadata.linkImage);
-              e.target.style.display = 'none'; 
+              e.target.style.display = 'none';
+              const placeholder = e.target.parentElement.querySelector('.img-error-placeholder');
+              if (placeholder) placeholder.style.display = 'flex';
             }}
+            style={{ opacity: 0 }}
           />
+        ) : null}
+        
+        {!selected.linkImage && (
+          <div className="flex flex-col items-center justify-center p-4 text-slate-500">
+            <div className="text-2xl mb-1">🖼️</div>
+            <p className="text-[10px] uppercase tracking-widest font-bold">Geen Afbeelding</p>
+          </div>
+        )}
+        
+        <div className="img-error-placeholder hidden absolute inset-0 flex-col items-center justify-center p-4 text-slate-500 bg-slate-800/80">
+          <div className="text-2xl mb-1">⚠️</div>
+          <p className="text-[10px] uppercase tracking-widest font-bold text-center">Afbeelding kon niet worden geladen</p>
+          <p className="text-[9px] mt-1 opacity-50 truncate max-w-full px-4">{selected.linkImage}</p>
         </div>
-      )}
-
+      </div>
+      
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-5">
         {quad && (
@@ -184,11 +200,11 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
         </div>
 
         {/* Usecase */}
-        {selected.metadata?.usecase && (
+        {selected.usecase && (
           <div>
             <h3 className="text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Usecase</h3>
             <p className="text-slate-300 leading-relaxed text-sm">
-              {selected.metadata.usecase}
+              {selected.usecase}
             </p>
           </div>
         )}
@@ -216,10 +232,10 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Partners & Locatie</span>
               <p className="text-sm text-slate-400 mt-0.5 italic">{selected.metadata.partners}</p>
             </div>
-            {selected.metadata.location && (
+            {selected.location && (
               <div>
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Exacte Locatie</span>
-                <p className="text-sm text-slate-400 mt-0.5 italic">{selected.metadata.location}</p>
+                <p className="text-sm text-slate-400 mt-0.5 italic">{selected.location}</p>
               </div>
             )}
           </div>

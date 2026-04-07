@@ -18,16 +18,37 @@ function getRingCategory(status) {
   return 2; // Assess (default for others)
 }
 
+// Robustly find a value in a row by matching the column name (case-insensitive, ignores spaces/special chars)
+function findValue(row, ...targetNames) {
+  const keys = Object.keys(row);
+  for (const target of targetNames) {
+    const targetNorm = target.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    const foundKey = keys.find(k => {
+      const keyNorm = k.replace(/[^a-z0-9]/gi, '').toLowerCase();
+      return keyNorm === targetNorm;
+    });
+    if (foundKey && row[foundKey] !== undefined) return row[foundKey];
+  }
+  return null;
+}
+
 export async function loadRadarData() {
   const data = await d3.csv(`${import.meta.env.BASE_URL}radardata.csv`);
+  
+  // Debug headers in dev
+  if (import.meta.env.DEV && data.length > 0) {
+    console.log("Tech Radar CSV Headers:", Object.keys(data[0]));
+  }
 
   // get unique Hoofdfase and Type Robot
   const hoofdfaseSet = new Set();
   const typeRobotSet = new Set();
   
   data.forEach(row => {
-    if (row["Hoofdfase"]) hoofdfaseSet.add(row["Hoofdfase"]);
-    if (row["Type Robot"]) typeRobotSet.add(row["Type Robot"]);
+    const hoofdfase = findValue(row, "Hoofdfase");
+    const typeRobot = findValue(row, "Type Robot");
+    if (hoofdfase) hoofdfaseSet.add(hoofdfase.trim());
+    if (typeRobot) typeRobotSet.add(typeRobot.trim());
   });
 
   const uniqueHoofdfase = Array.from(hoofdfaseSet).sort();
@@ -50,26 +71,29 @@ export async function loadRadarData() {
   }));
 
   const mappedBlips = data.map((row, index) => {
-    // Parse the fields based on headers.
-    const nameStr = row["Naam Usecase"] || `Robot ${index}`;
-    const parsedName = nameStr.replace(/^\d+\.\s*/, ''); 
+    const rawStatus = findValue(row, "Radar (Status)", "Status") || "";
+    const nameStr = findValue(row, "Naam Usecase", "Naam", "Name") || `Robot ${index}`;
+    const parsedName = nameStr.replace(/^\d+\.\s*/, '').trim(); 
+    
+    const linkImage = findValue(row, "Link Image", "Image Link", "Image") || "";
+    if (index === 0) console.log("Robot 1 Image Map:", { csvRow: row, linkImage });
     
     return {
       id: index + 1,
       name: parsedName,
-      quadrant: uniqueHoofdfase.indexOf(row["Hoofdfase"]),
-      ring: getRingCategory(row["Radar (Status)"]),
-      description: row["Omschrijving & Impact"],
-      isNew: row["Radar (Status)"].includes("Concept") ? true : false,
+      quadrant: uniqueHoofdfase.indexOf(findValue(row, "Hoofdfase")?.trim()),
+      ring: getRingCategory(rawStatus),
+      description: findValue(row, "Omschrijving & Impact", "Omschrijving") || "",
+      linkImage: linkImage,
+      usecase: findValue(row, "Usecase", "Use Case") || "",
+      location: findValue(row, "Location", "Locatie") || "",
+      isNew: rawStatus.toLowerCase().includes("concept"),
       metadata: {
-        hoofdfase: row["Hoofdfase"],
-        handeling: row["Specifieke Handeling"],
-        partners: row["Project Partners & Locatie"],
-        typeRobot: row["Type Robot"],
-        rawStatus: row["Radar (Status)"],
-        linkImage: row["Link Image"],
-        usecase: row["Usecase"],
-        location: row["Location"]
+        hoofdfase: findValue(row, "Hoofdfase")?.trim() || "",
+        handeling: findValue(row, "Specifieke Handeling", "Handeling") || "",
+        partners: findValue(row, "Project Partners & Locatie", "Partners") || "",
+        typeRobot: findValue(row, "Type Robot") || "",
+        rawStatus: rawStatus
       }
     };
   });
