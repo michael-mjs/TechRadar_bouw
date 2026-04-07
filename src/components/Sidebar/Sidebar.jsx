@@ -141,14 +141,14 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
       <h2 className="text-xl font-bold text-white mb-4 leading-tight">{selected.name}</h2>
       
       {/* Image Embed */}
-      <div className="mb-5 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 bg-slate-900/50 relative flex justify-center items-center min-h-[120px]">
+      <div className="mb-5 rounded-xl overflow-hidden shadow-lg border border-slate-700/50 bg-slate-900/50 relative flex justify-center items-center aspect-square">
         {selected.linkImage ? (
           <img 
             src={selected.linkImage} 
             alt={selected.name} 
             referrerPolicy="no-referrer"
             loading="lazy"
-            className="w-full h-auto object-cover max-h-56 transition-opacity duration-200"
+            className="w-full h-full object-contain transition-opacity duration-200"
             onLoad={(e) => { e.target.style.opacity = 1; }}
             onError={(e) => { 
               e.target.style.display = 'none';
