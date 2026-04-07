@@ -146,8 +146,13 @@ const Sidebar = ({ selected, rings, quadrants, allBlips, onClose, onNavigate }) 
           <img 
             src={selected.metadata.linkImage} 
             alt={selected.name} 
+            referrerPolicy="no-referrer"
+            loading="lazy"
             className="w-full h-auto object-cover max-h-56 transition-opacity duration-300"
-            onError={(e) => { e.target.style.display = 'none'; }}
+            onError={(e) => { 
+              console.error("Image failed to load:", selected.metadata.linkImage);
+              e.target.style.display = 'none'; 
+            }}
           />
         </div>
       )}
